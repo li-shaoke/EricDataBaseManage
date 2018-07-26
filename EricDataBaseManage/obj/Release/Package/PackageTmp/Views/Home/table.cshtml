@@ -1,0 +1,112 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title> 
+    <link rel="stylesheet" type="text/css" href="../../Content/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../Content/easyui/themes/icon.css">
+    <script type="text/javascript" src="../../Content/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../Content/easyui/jquery.easyui.min.js"></script>
+</head>
+<body style="margin:0px"  scroll="no">
+	<h2 style="margin-left:5px;">表：@(Request["d"]).dbo.@(Request["t"])</h2>
+	<p  style="margin-left:15px;">表说明：</p>
+	<div style="margin:20px 0;"></div>
+	
+	<table id="dg" style="width:100%;height:auto"
+			data-options="
+        rownumbers:true,
+				iconCls: 'icon-edit',
+				singleSelect: true,
+				url: 'GetTableInfo?d=@(Request["d"])&t=@(Request["t"])',
+				method:'get',
+        	   remoteSort:false,
+				multiSort:true
+			">
+		<thead>
+			<tr>
+				<th data-options="field:'Tcname',width:150">名称</th>
+				<th data-options="field:'IsKey',width:80">主键</th>
+				<th data-options="field:'Ttype',width:80">类型</th>
+				<th data-options="field:'Tprec',width:80">长度</th>
+                <th data-options="field:'Tweishu',width:80">小数</th>
+				<th data-options="field:'Tdefault',width:100,editor:'text'">默认值</th>
+                  <th data-options="field:'IsCanNull',width:80">允许Null</th>
+				<th data-options="field:'Tres',width:500,align:'left',editor:'text'">说明</th>
+			</tr>
+		</thead>
+	</table>
+
+	<script type="text/javascript">
+	    $.extend($.fn.datagrid.methods, {
+	        editCell: function (jq, param) {
+	            return jq.each(function () {
+	                var opts = $(this).datagrid('options');
+	                var fields = $(this).datagrid('getColumnFields', true).concat($(this).datagrid('getColumnFields'));
+	                for (var i = 0; i < fields.length; i++) {
+	                    var col = $(this).datagrid('getColumnOption', fields[i]);
+	                    col.editor1 = col.editor;
+	                    if (fields[i] != param.field) {
+	                        col.editor = null;
+	                    }
+	                }
+	                $(this).datagrid('beginEdit', param.index);
+	                var ed = $(this).datagrid('getEditor', param);
+	                if (ed) {
+	                    if ($(ed.target).hasClass('textbox-f')) {
+	                        $(ed.target).textbox('textbox').focus();
+	                    } else {
+	                        $(ed.target).focus();
+	                    }
+	                }
+	                for (var i = 0; i < fields.length; i++) {
+	                    var col = $(this).datagrid('getColumnOption', fields[i]);
+	                    col.editor = col.editor1;
+	                }
+	            });
+	        },
+	        enableCellEditing: function (jq) {
+	            return jq.each(function () {
+	                var dg = $(this);
+	                var opts = dg.datagrid('options');
+	                opts.oldOnClickCell = opts.onClickCell;
+	                opts.onDblClickCell = function (index, field) {
+	                    if (opts.editIndex != undefined) {
+	                        if (dg.datagrid('validateRow', opts.editIndex)) {
+	                            dg.datagrid('endEdit', opts.editIndex);
+	                            opts.editIndex = undefined;
+	                        } else {
+	                            return;
+	                        }
+	                    }
+	                    dg.datagrid('selectRow', index).datagrid('editCell', {
+	                        index: index,
+	                        field: field
+	                    });
+	                    opts.editIndex = index;
+	                    opts.oldOnClickCell.call(this, index, field);
+	                }
+	            });
+	        }
+	    });
+
+	    $(function () {
+	        $('#dg').datagrid().datagrid('enableCellEditing');
+
+
+	        $('#dg').datagrid({
+	            onAfterEdit: function (a, b, c) {
+	               
+	               
+
+	            }
+	           
+	        });
+	    })
+	</script>
+</body>
+</html>

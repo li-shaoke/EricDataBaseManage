@@ -1,0 +1,49 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>数据库文档管理系统</title>
+    <link rel="stylesheet" type="text/css" href="../../Content/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../Content/easyui/themes/icon.css">
+    <script type="text/javascript" src="../../Content/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../Content/easyui/jquery.easyui.min.js"></script>
+    <script src="../../Scripts/outlook2.js"></script>
+    <link rel="shortcut icon" href="../../Content/images/20180726_db.ico" type="image/x-icon" />
+    <link rel='icon' href='../../Content/images/20180726_db.ico' type='image/x-icon' />
+
+</head>
+<body class="easyui-layout" style="overflow-y: hidden" scroll="no">
+    <div data-options="region:'north',border:false" style="height: 50px; background: #A0D6FA; padding: 10px;font-size:20px;">数据库文档管理系统&nbsp;<span style="font-size:10px;color:gray">(1.0)</span></div>
+    <div region="west" split="true" title="导航菜单" style="width: 320px;height:600px;overflow-y:auto; " id="west">
+        <div class="easyui-accordion" fit="true" border="false" style="overflow:auto">
+            <ul id="database" class="easyui-tree" data-options="url:'/Home/ReadTableList',method:'get',animate:true"></ul>
+        </div>
+
+    </div>
+
+    <div id="mainPanle" region="center" style="background: #eee; overflow-y: hidden">
+        <div id="tabs" class="easyui-tabs" fit="true" border="false">
+            <div title="欢迎使用" style="padding: 20px; overflow: hidden;" id="home">
+                <h1>欢迎使用数据库文档管理系统！</h1>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $('#database').tree({
+            onClick: function (node) {
+                if (node.attributes) {
+                    console.log(node);
+                    addTab(node.text, "Home/Table?" + node.attributes.url);
+                }
+
+            }
+        });
+    </script>
+</body>
+</html>
